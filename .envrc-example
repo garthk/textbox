@@ -1,0 +1,7 @@
+# shellcheck shell=sh enable=all disable=2250
+source_up
+dotenv_if_exists
+VIRTUAL_ENV=${XDG_CACHE_HOME-$HOME/.cache}/textbox/venv
+layout python python3.11
+PYTHON=$VIRTUAL_ENV/bin/python3
+export PYTHON VIRTUAL_ENV

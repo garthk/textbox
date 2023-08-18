@@ -1,0 +1,83 @@
+[project]
+name = "textbox"
+version = "1.0.0"
+description = "Remember text for you, wholesale."
+license = { file = "LICENSE.txt" }
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["content", "sqlite3"]
+authors = [{ name = "Garth Kidd", email = "garth@garthk.com" }]
+maintainers = []
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Database",
+  "Topic :: System :: Archiving",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "black==23.7.0",
+  "datasette==0.64.3",
+  "datasette-render-html==1.0",
+  "datasette-render-images==0.4",
+  "mypy==1.5.1",
+  "nox==2023.4.22",
+  "pytest==7.4.0",
+  "ruff==0.0.285",
+  "sqlite-utils==3.35",
+]
+test = ["nox"]
+
+[project.urls]
+"Homepage" = "https://github.com/garthk/textbox"
+"Bug Reports" = "https://github.com/garthk/textbox/issues"
+"Source" = "https://github.com/garthk/textbox/"
+
+[project.scripts]
+textbox = "textbox.cli:main"
+
+[build-system]
+requires = ["setuptools>=43.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.mypy] # 'extend-exclude' excludes files or directories in addition to the defaults
+warn_return_any = true
+warn_unused_configs = true
+mypy_path = ["stubs"]
+files = ["src/textbox/*.py", "tests/*.py", "noxfile.py"]
+
+[tool.pytest.ini_options]
+minversion = "7.4"
+addopts = "-ra -q"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 98
+fixable = ["ALL"]
+select = ["ALL"]
+ignore = [
+  "ANN101",
+  "D203",
+  "D211",
+  "D212",
+  "D300",
+  "FIX002",
+  "TCH003",
+  "TD002",
+  "TD003",
+]
+
+[tool.ruff.per-file-ignores]
+"tests/**/*.py" = ["D", "INP001", "S101"]
+"noxfile.py" = ["D"]

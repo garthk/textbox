@@ -1,0 +1,9 @@
+
+*.db
+*.egg-info/
+.direnv
+.env
+.envrc
+.vscode/
+Brewfile.lock.json
+__pycache__/
