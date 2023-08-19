@@ -2,6 +2,14 @@
 
 Remember text for you, wholesale.
 
+TextBox is a suite of tools to help you maintain a local archive of text that's important to you in case the hosted versions disappear unexpectedly.
+
+Inhale:
+
+- The links you've saved to various bookmarking platforms
+- The pages you've saved to read later
+- Your Twitter archive
+- Broadly, any text with a URL
 ## Project Scaffold
 
 Specifically for Python:
