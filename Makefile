@@ -14,6 +14,5 @@ $(nox): pyproject.toml
 	touch $@
 
 .PHONY: fmt lint test
-fmt lint test &: % : $(nox)
-	$(nox) -s $*
-
+fmt lint test: $(nox)
+	$(nox) -s $@
