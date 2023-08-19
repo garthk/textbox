@@ -1,9 +1,12 @@
 PYTHON         ?= python3
 SHELL          := bash
 .SHELLFLAGS    := -eu -o pipefail -c
-.DEFAULT_GOAL   = test
+.DEFAULT_GOAL   = all
 
 nox = $(VIRTUAL_ENV)/bin/nox
+
+all: $(nox)
+	nox -s fmt lint test
 
 .PHONY: dev
 dev: $(nox)
