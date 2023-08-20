@@ -1,4 +1,3 @@
-
 *.db
 *.egg-info/
 .direnv
@@ -7,3 +6,4 @@
 .vscode/
 Brewfile.lock.json
 __pycache__/
+build/

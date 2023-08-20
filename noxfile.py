@@ -18,5 +18,5 @@ def lint(session: nox.Session) -> None:
 
 @nox.session(reuse_venv=True)
 def test(session: nox.Session) -> None:
-    session.install("pytest")
+    session.install("pytest", ".")
     session.run("pytest")
