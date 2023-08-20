@@ -1,5 +1,7 @@
 "Remember text for you, wholesale."
 
+import dataclasses
+import datetime
 import importlib.metadata
 import typing as t
 
@@ -8,13 +10,13 @@ __all__ = ["__version__"]
 __version__ = importlib.metadata.version("textbox")
 
 
-@t.runtime_checkable
-class Text(t.Protocol):
+@dataclasses.dataclass
+class Text:
     "Text on its way to or from the box."
 
-    captured: str
-    created: str | None
-    modified: str | None
+    captured: datetime.datetime
+    created: datetime.datetime | None
+    modified: datetime.datetime | None
     url: str
     content: str
     content_type: str | None
@@ -34,9 +36,16 @@ class Box(t.Protocol):
 
 
 @t.runtime_checkable
+class OpenTheBox(t.Protocol):
+    "Functions satisfying this protocol might open boxes."
+
+    def __call__(self) -> Box:
+        "Open the box."
+        ...
+
+
+@t.runtime_checkable
 class BoxOpener(t.Protocol):
     "Modules satisfying this protocol implement our storage API."
 
-    def open(self) -> Box:  # noqa: A003
-        "Open the box."
-        ...
+    open_the_box: OpenTheBox
