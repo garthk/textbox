@@ -36,22 +36,23 @@ SCHEMATA_FILENAME = "textbox.sql"
 TEXTBOX_IN_MEMORY = ":memory:"
 
 
-def connect(database: _Pathish) -> sqlite3.Connection:
-    "Connect to our database at a particular path."
-    logger.debug("connecting to %s...", database)
-    con = sqlite3.Connection(database)
-    con.row_factory = sqlite3.Row
-    return con
+def open_the_box(*, environ: _Environ = os.environ) -> Box:
+    "Open the built-in box."
+    location: str | p.Path
+    match environ:
+        case {"TEXTBOX_LOCATION": ":memory:"}:
+            location = ":memory:"
+        case {"TEXTBOX_LOCATION": l}:
+            location = l
+        case _:
+            location = _data_dir("textbox", environ) / DEFAULT_FILENAME
 
+    if isinstance(location, p.Path):
+        location.mkdir(exist_ok=True, parents=True)
 
-def create_tables(con: sqlite3.Connection) -> None:
-    "Create our tables."
-    files = importlib.resources.files(__name__)
-    schemata = files.joinpath(SCHEMATA_FILENAME).read_text().split("\n\n")
-    with con:
-        for schema in schemata:
-            logger.debug("%s", schema)
-            con.execute(schema)
+    con = _connect(location)
+    _create_tables(con)
+    return BuiltinBox(con)
 
 
 class BuiltinBox(Box):
@@ -81,28 +82,27 @@ class BuiltinBox(Box):
         self.con = None
 
 
-def open_the_box(*, environ: _Environ = os.environ) -> Box:
-    "Open the built-in box."
-    location: str | p.Path
-    match environ:
-        case {"TEXTBOX_LOCATION": ":memory:"}:
-            location = ":memory:"
-        case {"TEXTBOX_LOCATION": l}:
-            location = l
-        case _:
-            location = _data_dir("textbox", environ) / DEFAULT_FILENAME
-
-    if isinstance(location, p.Path):
-        location.mkdir(exist_ok=True, parents=True)
-
-    con = connect(location)
-    create_tables(con)
-    return BuiltinBox(con)
-
-
 if t.TYPE_CHECKING:
-    _otb: OpenTheBox = open_the_box
-    _bo: BoxOpener = sys.modules[__name__]
+    _otb: OpenTheBox = open_the_box  # satisfies function plugin protocol
+    _bo: BoxOpener = sys.modules[__name__]  # satisfies module plugin protocol
+
+
+def _connect(database: _Pathish) -> sqlite3.Connection:
+    "Connect to our database at a particular path."
+    logger.debug("connecting to %s...", database)
+    con = sqlite3.Connection(database)
+    con.row_factory = sqlite3.Row
+    return con
+
+
+def _create_tables(con: sqlite3.Connection) -> None:
+    "Create our tables."
+    files = importlib.resources.files(__name__)
+    schemata = files.joinpath(SCHEMATA_FILENAME).read_text().split("\n\n")
+    with con:
+        for schema in schemata:
+            logger.debug("%s", schema)
+            con.execute(schema)
 
 
 @functools.cache
