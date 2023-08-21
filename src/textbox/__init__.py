@@ -2,8 +2,11 @@
 
 import dataclasses
 import datetime
+import importlib
 import importlib.metadata
 import typing as t
+
+from textbox.plugins import MF, find_plugins
 
 __all__ = ["__version__"]
 
@@ -49,3 +52,20 @@ class BoxOpener(t.Protocol):
     "Modules satisfying this protocol implement our storage API."
 
     open_the_box: OpenTheBox
+
+
+def plugged_storage() -> dict[str, OpenTheBox | None]:
+    "Find our storage plugins."
+    return find_plugins(
+        namespace="textbox.storage",
+        group="textbox.storage",
+        adapter=_storage_adapter,
+    )
+
+
+def _storage_adapter(plugin: MF) -> OpenTheBox | None:
+    if isinstance(plugin, BoxOpener):
+        return _storage_adapter(plugin.open_the_box)
+    if isinstance(plugin, OpenTheBox):
+        return plugin
+    return None

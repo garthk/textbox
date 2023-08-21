@@ -3,7 +3,7 @@ import pathlib as p
 import typing as t
 
 import textbox.storage.builtin
-from textbox import BoxOpener, OpenTheBox, Text
+from textbox import BoxOpener, OpenTheBox, Text, plugged_storage
 from textbox.storage.builtin import (
     BuiltinBox,
     _data_dir,
@@ -18,11 +18,21 @@ def test_builtin_protocols() -> None:
     assert isinstance(textbox.storage.builtin.open_the_box, OpenTheBox)
 
 
+def test_builtin_plugin_api() -> None:
+    storage_plugins = plugged_storage()
+    assert len(storage_plugins) > 0
+    assert "textbox.storage.builtin" in storage_plugins
+
+    open_the_box = storage_plugins["textbox.storage.builtin"]
+    assert open_the_box
+    assert isinstance(open_the_box, OpenTheBox)
+
+
 def test_builtin_box_opener() -> None:
     environ = {"TEXTBOX_LOCATION": ":memory:"}
     box = open_the_box(environ=environ)
     assert isinstance(box, BuiltinBox)
-    # TODO ensure appropriate non-null values:
+    # TODO: ensure appropriate non-null values:
     text = Text(
         captured=None,
         created=None,
