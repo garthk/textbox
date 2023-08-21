@@ -11,6 +11,18 @@ Inhale:
 - Your Twitter archive
 - Broadly, any text with a URL
 
+## Scope
+
+I intend to make it easy to:
+
+- Inhale content from any archive provided to satisfy your GDPR right to data portability.
+- Inhale content live from a service's API.
+- Search the content you've inhaled.
+
+I don't intend to make it easy to:
+
+- Share the content you've inhaled, because privacy and consent.
+
 ## Design Sketch
 
 This'll change as the project teaches me what it's about, but I'm thinking:
