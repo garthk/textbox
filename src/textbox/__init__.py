@@ -31,10 +31,6 @@ class Text:
     # fmt: on
 
 
-class Generic(t.Protocol):
-    ...
-
-
 class Box(t.Protocol):
     "The box into which we put the text."
 
