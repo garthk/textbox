@@ -19,18 +19,23 @@ classifiers = [
 dependencies = ["click==8.1.7"]
 
 [project.optional-dependencies]
-dev = [
-  "black==23.7.0",
+build = ["nox==2023.4.22"]
+docs = [
+  "furo==2023.8.19",
+  "myst-parser==2.0.0",
+  "Sphinx==7.1.2",
+  "sphinx-toolbox==3.5.0",
+  "sphinx-notfound-page==0.8.3",
+  "sphinxcontrib-mermaid==0.9.2",
+]
+test = ["black==23.7.0", "mypy==1.5.1", "pytest==7.4.0", "ruff==0.0.285"]
+util = [
   "datasette==0.64.3",
   "datasette-render-html==1.0",
   "datasette-render-images==0.4",
-  "mypy==1.5.1",
-  "nox==2023.4.22",
-  "pytest==7.4.0",
-  "ruff==0.0.285",
   "sqlite-utils==3.35",
 ]
-test = ["nox"]
+dev = ["textbox[build,docs,test,util]"]
 
 [project.urls]
 "Homepage" = "https://github.com/garthk/textbox"

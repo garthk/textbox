@@ -1,11 +1,8 @@
 CREATE TABLE
     "text" (
-        [captured] TEXT,
-        [created] TEXT,
-        [modified] TEXT,
-        [url] TEXT,
-        [content] TEXT,
-        [content_type] TEXT,
+        [captured] TEXT NOT NULL,
+        [uri] TEXT NOT NULL,
+        [content] TEXT NOT NULL,
         [metadata] TEXT,
-        PRIMARY KEY ([url], [captured])
+        PRIMARY KEY ([uri], [captured])
     );

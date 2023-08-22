@@ -34,6 +34,13 @@ This'll change as the project teaches me what it's about, but I'm thinking:
 - [Shot-scraper] to capture images of web pages
 - [Readability] to reduce cutter in captured HTML
 
+### Data Model
+
+- SQLite file with the text and metadata
+- Textbox-provided directory into which to put other files
+  - Put the paths into the metadata column!
+    - Standard JSON path?
+
 ## Project Scaffold
 
 Specifically for Python:

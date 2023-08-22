@@ -1,3 +1,4 @@
+import datetime
 import os
 import pathlib as p
 import typing as t
@@ -34,12 +35,9 @@ def test_builtin_box_opener() -> None:
     assert isinstance(box, BuiltinBox)
     # TODO: ensure appropriate non-null values:
     text = Text(
-        captured=None,
-        created=None,
-        modified=None,
-        url=None,
-        content=None,
-        content_type=None,
+        captured=datetime.datetime.now(tz=datetime.UTC),
+        uri="urn:ietf:rfc:2119",
+        content="SHOULD",
         metadata=None,
     )
     box.put([text])

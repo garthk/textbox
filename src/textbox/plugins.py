@@ -7,9 +7,11 @@ import pkgutil
 import types
 import typing as t
 
-P_co = t.TypeVar("P_co", covariant=True)
+P_co = t.TypeVar("P_co", covariant=True)  #: Protocol implementation
 
-MF: t.TypeAlias = types.FunctionType | types.ModuleType
+MF: t.TypeAlias = types.FunctionType | types.ModuleType  #: Module or function
+
+PluginMap: t.TypeAlias = dict[str, P_co | None]  #: Map of plugins to implementations
 
 
 class Adapter(t.Protocol, t.Generic[P_co]):
@@ -30,7 +32,7 @@ def find_plugins(
     namespace: str,
     group: str,
     adapter: Adapter[P_co],
-) -> dict[str, P_co | None]:
+) -> PluginMap[P_co]:
     """
     Find plugins by their package namespace or entry point.
 

@@ -7,3 +7,4 @@
 Brewfile.lock.json
 __pycache__/
 build/
+docs/_build/

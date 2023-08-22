@@ -31,15 +31,18 @@ _Pathish: t.TypeAlias = str | bytes | p.Path
 
 __all__ = ["DEFAULT_FILENAME", "Box", "BoxOpener"]
 logger = logging.getLogger(__name__)
-DEFAULT_FILENAME = "textbox.db"
+DEFAULT_FILENAME = "textbox.db"  #: The default database filename
 SCHEMATA_FILENAME = "textbox.sql"
 TEXTBOX_IN_MEMORY = ":memory:"
 
 
-def open_the_box(*, environ: _Environ = os.environ) -> Box:
+def open_the_box(
+    *,
+    environ: _Environ | None,  #: override the environment for testing
+) -> Box:
     "Open the built-in box."
     location: str | p.Path
-    match environ:
+    match environ := environ or os.environ:
         case {"TEXTBOX_LOCATION": ":memory:"}:
             location = ":memory:"
         case {"TEXTBOX_LOCATION": l}:
@@ -59,6 +62,7 @@ class BuiltinBox(Box):
     "The box into which we put the text."
 
     con: sqlite3.Connection | None
+    put_sql: str
 
     def __init__(self, con: sqlite3.Connection) -> None:
         "Initialise the box."
@@ -82,9 +86,12 @@ class BuiltinBox(Box):
         self.con = None
 
 
+assert isinstance(open_the_box, OpenTheBox)  # noqa: S101
+assert isinstance(sys.modules[__name__], BoxOpener)  # noqa: S101
+
 if t.TYPE_CHECKING:
-    _otb: OpenTheBox = open_the_box  # satisfies function plugin protocol
-    _bo: BoxOpener = sys.modules[__name__]  # satisfies module plugin protocol
+    _otb: OpenTheBox = open_the_box  # satisfies function plugin protocol :noindex:
+    _bo: BoxOpener = sys.modules[__name__]  # satisfies module plugin protocol :noindex:
 
 
 def _connect(database: _Pathish) -> sqlite3.Connection:
@@ -105,7 +112,6 @@ def _create_tables(con: sqlite3.Connection) -> None:
             con.execute(schema)
 
 
-@functools.cache
 def _insertion_sql(table: str, prototype: type[Text]) -> str:
     "Generate an insertion statement."
     fields = prototype.__annotations__.keys()
@@ -121,12 +127,16 @@ def _insertion_sql(table: str, prototype: type[Text]) -> str:
     )
 
 
-@functools.cache
 def _shorten_sql(sql: str, *, width: int = 76) -> str:
     "Shorten SQL, as it'll likely end up in our telemetry."
     _sql = textwrap.dedent(sql).strip()
     line = re.sub(r"\s+", " ", textwrap.fill(_sql, width=width))
     return line if len(line) < width else _sql
+
+
+# I'd prefer to use decorators, but MyPy.
+_insertion_sql = functools.cache(_insertion_sql)
+_shorten_sql = functools.cache(_shorten_sql)
 
 
 def _data_dir(app: str, environ: _Environ = os.environ) -> p.Path:
